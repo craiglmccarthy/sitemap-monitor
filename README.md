@@ -2,7 +2,7 @@
 
 Usage
 ```
-sitemap-monitor --site <sitemap URL>
+sitemap-monitor --sitemap <sitemap URL>
 ```
 
 ![Sitemap-monitor screenshot](/images/sitemap-monitor1.png)
