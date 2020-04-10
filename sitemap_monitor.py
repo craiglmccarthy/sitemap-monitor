@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Monitors changes to Sitemap over time. Script compares URLs in "live" Sitemap 
+Monitors changes to Sitemap over time. Script compares URLs in a "live" Sitemap
 with URLs in a saved JSON file. If no JSON file is present, script will give 
 option to initialize the JSON file for future comparisons. Includes basic
 filtering for new URLs.
