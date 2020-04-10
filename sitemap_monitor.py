@@ -17,7 +17,6 @@ from pathlib import Path
 from xml.etree import ElementTree
 
 import requests
-from bs4 import BeautifulSoup
 
 parser = argparse.ArgumentParser(description='Monitor changes to Sitemap.')
 parser.add_argument('--sitemap', nargs='+',
@@ -100,9 +99,9 @@ def sitemap_last_mod(sitemap_memory):
     return last_mod
 
 
-def update_sitemap(new_urls, latest_sitemap_urls):
+def update_sitemap(new_urls, removed_urls, latest_sitemap_urls):
     """Update Sitemap to latest"""
-    if len(new_urls) > 0:
+    if len(new_urls) > 0 or len(removed_urls) > 0:
         ans = input('Update Sitemap? (Y/N): ')
         if ans.lower() == 'y':
             print('Updating Sitemap...')
@@ -137,7 +136,7 @@ def main():
         for i in new_urls_filtered:
             print(i)
 
-    update_sitemap(new_urls, latest_sitemap_urls)
+    update_sitemap(new_urls, removed_urls, latest_sitemap_urls)
 
 
 if __name__ == '__main__':
