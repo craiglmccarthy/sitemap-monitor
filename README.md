@@ -10,7 +10,7 @@ Examples show the tool detecting changes in - https://www.theguardian.com/sitema
 ```
 sitemap-monitor --sitemap <Sitemap URL>
 ```
-On first running, if the tool does not find a previous capture of a Sitemap, it will ask for the user if they'd like to create one -
+On first running, if the tool does not find a previous capture of a Sitemap, it will ask the user if they'd like to create one -
 
 ![Sitemap-monitor screenshot](/images/sitemap-monitor1.png)
 
