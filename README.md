@@ -8,7 +8,7 @@ Examples show the tool detecting changes in - https://www.theguardian.com/sitema
 ## Usage
 
 ```
-sitemap-monitor --sitemap <Sitemap URL>
+sitemap-monitor.py --sitemap <Sitemap URL>
 ```
 On initial run, if the tool does not find a previous capture of a Sitemap, it will ask the user if they'd like to create one -
 
@@ -21,11 +21,11 @@ Here is the tool running approximately 30 minutes after previous capture of Site
 ![Sitemap-monitor screenshot](/images/sitemap-monitor.gif)
 
 ```
-sitemap-monitor --sitemap <Sitemap URL> -on -Outputs new URLs found to terminal
+sitemap-monitor.py --sitemap <Sitemap URL> -on -Outputs new URLs found to terminal
 
-sitemap-monitor --sitemap <Sitemap URL> -or -Outputs removed URLs found to terminal
+sitemap-monitor.py --sitemap <Sitemap URL> -or -Outputs removed URLs found to terminal
 
-sitemap-monitor --sitemap <Sitemap URL> -f <keywords> -Outputs URLs that contain keywords
+sitemap-monitor.py --sitemap <Sitemap URL> -f <keywords> -Outputs new URLs that contain keywords
 ```
 
 Sitemap captures are stored in sitemap_memory.json - this will be created in the same directory as sitemap_monitor.py. The file can be deleted in order to reset the tool.
