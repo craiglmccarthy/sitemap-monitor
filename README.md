@@ -10,7 +10,7 @@ Examples show the tool detecting changes in - https://www.theguardian.com/sitema
 ```
 sitemap-monitor --sitemap <Sitemap URL>
 ```
-On first running, if the tool does not find a previous capture of a Sitemap, it will ask the user if they'd like to create one -
+On initial run, if the tool does not find a previous capture of a Sitemap, it will ask the user if they'd like to create one -
 
 ![Sitemap-monitor screenshot](/images/sitemap-monitor1.png)
 
@@ -28,4 +28,4 @@ sitemap-monitor --sitemap <Sitemap URL> -or -Outputs removed URLs found to termi
 sitemap-monitor --sitemap <Sitemap URL> -f <keywords> -Outputs URLs that contain keywords
 ```
 
-Sitemap captures are stored in sitemap_memory.json, which will be created in the same directory as sitemap_monitor.py. The file can be deleted in order to reset the tool.
+Sitemap captures are stored in sitemap_memory.json - this will be created in the same directory as sitemap_monitor.py. The file can be deleted in order to reset the tool.
