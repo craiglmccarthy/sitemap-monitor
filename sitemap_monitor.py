@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Monitors changes to Sitemap over time. Script compares URLs in a "live" Sitemap
+Monitors changes to Sitemaps over time. Script compares URLs in a live Sitemap
 with URLs in a saved JSON file. If no JSON file is present, script will give 
 option to initialize the JSON file for future comparisons. Includes basic
 filtering for new URLs.
@@ -25,12 +25,18 @@ parser.add_argument('-or', '--outputremoved',
                     action='store_true', help="Show removed URLs")
 parser.add_argument('-on', '--outputnew',
                     action='store_true', help="Show new URLs")
-parser.add_argument('-f', '--filter', nargs='*', help="Show new URLs")
+parser.add_argument('-fa', '--filterand', nargs='*',
+                    help="Filter new URLs - contains all keywords")
+parser.add_argument('-fo', '--filteror', nargs='*',
+                    help="Filter new URLs - contains at least 1 keyword")
 args = parser.parse_args()
 
 sitemap_urls = args.sitemap
 sitemap_memory = "./sitemap_memory.json"
-filter_words = args.filter
+if args.filterand != None:
+    filter_words = args.filterand
+else:
+    filter_words = args.filteror
 
 
 def get_latest_sitemap_urls(sitemap_urls):
@@ -52,12 +58,13 @@ def get_previous_sitemap_urls(sitemap_memory, latest_sitemap_urls):
             previous_sitemap_urls = json.loads(f.read())
         return previous_sitemap_urls
     else:
-        print("Previous Sitemap capture does not exist.")
+        print("Previous Sitemap state does not exist.")
         ans = input('Would you like to save URLs from latest Sitemap? (Y/N): ')
         if ans.lower() == 'y':
             print('Saving Sitemap...')
             with open(sitemap_memory, 'w') as f:
                 json.dump(latest_sitemap_urls, f, indent=4)
+            sys.exit(0)
         else:
             print("Exiting...")
             sys.exit(0)
@@ -83,11 +90,16 @@ def compare_sitemaps(latest_sitemap_urls, previous_sitemap_urls):
 def filter_urls(new_urls, filter_words):
     """Returns filtered list of URLs based on URL filtering"""
     filtered_urls = []
-    for i in new_urls:
-        for j in filter_words:
-            if j in i:
+    if args.filterand != None:
+        for i in new_urls:
+            if all(x in i for x in filter_words):
                 filtered_urls.append(i)
-    filtered_urls = list(set(filtered_urls))
+        filtered_urls = list(set(filtered_urls))
+    else:
+        for i in new_urls:
+            if any(x in i for x in filter_words):
+                filtered_urls.append(i)
+        filtered_urls = list(set(filtered_urls))
     return filtered_urls
 
 
@@ -116,9 +128,9 @@ def main():
     new_urls, removed_urls = compare_sitemaps(
         latest_sitemap_urls, previous_sitemap_urls)
 
-    print("Sitemap previously checked:", sitemap_last_mod(sitemap_memory))
+    print("Sitemap saved state:", sitemap_last_mod(sitemap_memory))
     print("Number of URLs in Sitemap (current):", len(latest_sitemap_urls))
-    print("Number of URLs in Sitemap (previous):", len(previous_sitemap_urls))
+    print("Number of URLs in Sitemap (saved state):", len(previous_sitemap_urls))
 
     print("Number of removed URLs:", len(removed_urls))
     if args.outputremoved == True:
@@ -130,7 +142,7 @@ def main():
         for i in new_urls:
             print(i)
 
-    if args.filter != None:
+    if args.filterand != None or args.filteror != None:
         new_urls_filtered = filter_urls(new_urls, filter_words)
         print('Number of new URLs (filtered):', len(new_urls_filtered))
         for i in new_urls_filtered:
