@@ -28,4 +28,4 @@ sitemap-monitor --sitemap <Sitemap URL> -or -Outputs removed URLs found to termi
 sitemap-monitor --sitemap <Sitemap URL> -f <keywords> -Outputs URLs that contain keywords
 ```
 
-Sitemap captures are stored in sitemap_memory.JSON - it will be created in the same directory as sitemap_monitor.py. The file can be deleted in order to reset the tool.
+Sitemap captures are stored in sitemap_memory.json - it will be created in the same directory as sitemap_monitor.py. The file can be deleted in order to reset the tool.
