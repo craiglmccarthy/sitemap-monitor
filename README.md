@@ -21,9 +21,9 @@ Here is the tool running approximately 30 minutes after previous capture of Site
 ![Sitemap-monitor screenshot](/images/sitemap-monitor.gif)
 
 ```
-sitemap-monitor.py --sitemap <Sitemap URL> -on -Outputs new URLs found to terminal
+sitemap-monitor.py --sitemap <Sitemap URL> -on -Outputs new URLs
 
-sitemap-monitor.py --sitemap <Sitemap URL> -or -Outputs removed URLs found to terminal
+sitemap-monitor.py --sitemap <Sitemap URL> -or -Outputs removed URLs
 
 sitemap-monitor.py --sitemap <Sitemap URL> -f <keywords> -Outputs new URLs that contain keywords
 ```
