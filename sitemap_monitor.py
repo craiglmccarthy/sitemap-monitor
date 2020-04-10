@@ -52,7 +52,7 @@ def get_previous_sitemap_urls(sitemap_memory, latest_sitemap_urls):
             previous_sitemap_urls = json.loads(f.read())
         return previous_sitemap_urls
     else:
-        print("Previous Sitemap file does not exist.")
+        print("Previous Sitemap capture does not exist.")
         ans = input('Would you like to save URLs from latest Sitemap? (Y/N): ')
         if ans.lower() == 'y':
             print('Saving Sitemap...')
