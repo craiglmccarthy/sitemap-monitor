@@ -18,25 +18,55 @@ from xml.etree import ElementTree
 
 import requests
 
-parser = argparse.ArgumentParser(description='Monitor changes to Sitemap.')
-parser.add_argument('--sitemap', nargs='+',
-                    help='Sitemap input', required=True)
-parser.add_argument('-or', '--outputremoved',
-                    action='store_true', help="Show removed URLs")
-parser.add_argument('-on', '--outputnew',
-                    action='store_true', help="Show new URLs")
-parser.add_argument('-fa', '--filterand', nargs='*',
-                    help="Filter new URLs - contains all keywords")
-parser.add_argument('-fo', '--filteror', nargs='*',
-                    help="Filter new URLs - contains at least 1 keyword")
-args = parser.parse_args()
 
-sitemap_urls = args.sitemap
-sitemap_memory = "./sitemap_memory.json"
-if args.filterand != None:
-    filter_words = args.filterand
-else:
-    filter_words = args.filteror
+def main():
+    parser = argparse.ArgumentParser(description='Monitor changes to Sitemap')
+    parser.add_argument('--sitemap', nargs='+',
+                        help='Sitemap input', required=True)
+    parser.add_argument('-or', '--outputremoved',
+                        action='store_true', help="Show removed URLs")
+    parser.add_argument('-on', '--outputnew',
+                        action='store_true', help="Show new URLs")
+    parser.add_argument('-fa', '--filterand', nargs='*',
+                        help="Filter new URLs - contains all keywords")
+    parser.add_argument('-fo', '--filteror', nargs='*',
+                        help="Filter new URLs - contains at least 1 keyword")
+    args = parser.parse_args()
+
+    sitemap_urls = args.sitemap
+    sitemap_memory = "./sitemap_memory.json"
+    if args.filterand != None:
+        filter_words = args.filterand
+    else:
+        filter_words = args.filteror
+
+    latest_sitemap_urls = get_latest_sitemap_urls(sitemap_urls)
+    previous_sitemap_urls = get_previous_sitemap_urls(
+        sitemap_memory, latest_sitemap_urls)
+    new_urls, removed_urls = compare_sitemaps(
+        latest_sitemap_urls, previous_sitemap_urls)
+
+    print("Sitemap saved state:", sitemap_last_mod(sitemap_memory))
+    print("Number of URLs in Sitemap (current):", len(latest_sitemap_urls))
+    print("Number of URLs in Sitemap (saved state):", len(previous_sitemap_urls))
+
+    print("Number of removed URLs:", len(removed_urls))
+    if args.outputremoved == True:
+        for i in removed_urls:
+            print(i)
+
+    print("Number of new URLs:", len(new_urls))
+    if args.outputnew == True:
+        for i in new_urls:
+            print(i)
+
+    if args.filterand != None or args.filteror != None:
+        new_urls_filtered = filter_urls(new_urls, filter_words, args.filterand)
+        print('Number of new URLs (filtered):', len(new_urls_filtered))
+        for i in new_urls_filtered:
+            print(i)
+
+    update_sitemap(new_urls, removed_urls, latest_sitemap_urls, sitemap_memory)
 
 
 def get_latest_sitemap_urls(sitemap_urls):
@@ -87,10 +117,10 @@ def compare_sitemaps(latest_sitemap_urls, previous_sitemap_urls):
     return changes
 
 
-def filter_urls(new_urls, filter_words):
+def filter_urls(new_urls, filter_words, args_filterand):
     """Returns filtered list of URLs based on URL filtering"""
     filtered_urls = []
-    if args.filterand != None:
+    if args_filterand != None:
         for i in new_urls:
             if all(x in i for x in filter_words):
                 filtered_urls.append(i)
@@ -111,7 +141,7 @@ def sitemap_last_mod(sitemap_memory):
     return last_mod
 
 
-def update_sitemap(new_urls, removed_urls, latest_sitemap_urls):
+def update_sitemap(new_urls, removed_urls, latest_sitemap_urls, sitemap_memory):
     """Update Sitemap to latest"""
     if len(new_urls) > 0 or len(removed_urls) > 0:
         ans = input('Update Sitemap? (Y/N): ')
@@ -119,36 +149,6 @@ def update_sitemap(new_urls, removed_urls, latest_sitemap_urls):
             print('Updating Sitemap...')
             with open(sitemap_memory, 'w') as f:
                 json.dump(latest_sitemap_urls, f, indent=4)
-
-
-def main():
-    latest_sitemap_urls = get_latest_sitemap_urls(sitemap_urls)
-    previous_sitemap_urls = get_previous_sitemap_urls(
-        sitemap_memory, latest_sitemap_urls)
-    new_urls, removed_urls = compare_sitemaps(
-        latest_sitemap_urls, previous_sitemap_urls)
-
-    print("Sitemap saved state:", sitemap_last_mod(sitemap_memory))
-    print("Number of URLs in Sitemap (current):", len(latest_sitemap_urls))
-    print("Number of URLs in Sitemap (saved state):", len(previous_sitemap_urls))
-
-    print("Number of removed URLs:", len(removed_urls))
-    if args.outputremoved == True:
-        for i in removed_urls:
-            print(i)
-
-    print("Number of new URLs:", len(new_urls))
-    if args.outputnew == True:
-        for i in new_urls:
-            print(i)
-
-    if args.filterand != None or args.filteror != None:
-        new_urls_filtered = filter_urls(new_urls, filter_words)
-        print('Number of new URLs (filtered):', len(new_urls_filtered))
-        for i in new_urls_filtered:
-            print(i)
-
-    update_sitemap(new_urls, removed_urls, latest_sitemap_urls)
 
 
 if __name__ == '__main__':
